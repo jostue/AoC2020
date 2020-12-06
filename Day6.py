@@ -1,31 +1,59 @@
 file = open('Day6PuzzleInput.txt','r')
 lines = file.readlines()
 
-validLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-
-currentCount = 0
-groupAnswer = ""
-
-amountGroupAnswers = []
-
 # Day 6.1
+
+groupAnswer = ""
+amountGroupAnswers = []
 
 for line in lines:
     if line != "\n":
-        groupAnswer += line[:-1]
+        strippedNewline = line.replace("\n","")
+        groupAnswer += strippedNewline
     else:
-        for letter in validLetters:
-            if letter in groupAnswer:
-                currentCount += 1
-        amountGroupAnswers.append(currentCount)
-        currentCount = 0
+        collectiveAnswers = "".join(set(groupAnswer))
+        amountGroupAnswers.append(len(collectiveAnswers))
         groupAnswer = ""
 
 #check for last group (no newline at the end)
-for letter in validLetters:
-    if letter in groupAnswer:
-        currentCount += 1
-amountGroupAnswers.append(currentCount)
+collectiveAnswers = "".join(set(groupAnswer))
+amountGroupAnswers.append(len(collectiveAnswers))
+
+result = sum(amountGroupAnswers)
+print(result)
+
+
+# Day 6.2
+
+currentGroupAnswers = []
+amountGroupAnswers = []
+
+for line in lines:
+    if line != "\n":
+        strippedNewline = line.replace("\n","")
+        currentGroupAnswers.append(strippedNewline)
+    else:
+        tempResult = ""
+        for idx, currentAnswer in enumerate(currentGroupAnswers):
+            if idx > 0:
+                for currentLetter in tempResult:
+                    if currentLetter not in currentAnswer:
+                        tempResult = tempResult.replace(currentLetter, "")
+            else:
+                tempResult = currentAnswer
+        currentGroupAnswers = []
+        amountGroupAnswers.append(len(tempResult))
+
+#check for last group (no newline at the end)
+tempResult = ""
+for idx, currentAnswer in enumerate(currentGroupAnswers):
+    if idx > 0:
+        for currentLetter in tempResult:
+            if currentLetter not in currentAnswer:
+                tempResult = tempResult.replace(currentLetter, "")
+    else:
+        tempResult = currentAnswer
+amountGroupAnswers.append(len(tempResult))
 
 result = sum(amountGroupAnswers)
 print(result)
