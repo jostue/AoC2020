@@ -1,6 +1,7 @@
 
 colorCodes = {}
 
+### PREP DATA
 def prepareData():
     # key:"color1 color2", value: [["colorX colorY", i], ..., ["colorV colorW", j]]
     for line in lines:
@@ -20,6 +21,7 @@ def prepareData():
         # Save if already ran through and if goldes bag found inside
         colorCodes[bagColorCode] = {"containedBags":modifidyContainedBags, "checked":False, "containsGolden":False}
 
+### DAY 7.1 ALGO
 def checkColor(key, checkedKeys):
     if (key not in checkedKeys) and (colorCodes[key]["checked"] == False):
         checkedKeys.append(key)
@@ -37,17 +39,33 @@ def checkColor(key, checkedKeys):
                 if colorCodes[containedBag[0]]["containsGolden"]:
                     colorCodes[key]["containsGolden"] = True
 
+### DAY 7.2 ALGO
+def findAmountOfBagsInside(key):
+    amountInside = 0
+    currentBagData = colorCodes[key]
+    if currentBagData["containedBags"]:
+        for containedBag in currentBagData["containedBags"]:
+            amountInside += int(containedBag[1])
+            amountInside += int(containedBag[1]) * findAmountOfBagsInside(containedBag[0])
+    return amountInside
+
+
 
 ### MAIN ####
 file = open('Day7PuzzleInput.txt','r')
 lines = file.readlines()
 
 prepareData()
+
+#Day 7.2
+result = findAmountOfBagsInside("shiny gold")
+print(result)
+
+
+# Day 7.1
 for colorCode in colorCodes:
     checkedKeys = []
     checkColor(colorCode, checkedKeys)
-
-#print(colorCodes)
 
 amountWithGolden = 0
 for colorCode in colorCodes:
